@@ -1,2 +1,2 @@
 # gae-dev_appserver-patcher
-Google AppEngine 開発サーバー(dev_appserver)のパッチプロジェクト
+Google App Engine (GAE) dev_appserver patcher
