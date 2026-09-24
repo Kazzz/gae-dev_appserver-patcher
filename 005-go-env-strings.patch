@@ -1,0 +1,25 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/go/instance_factory.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/go/instance_factory.py
+@@ -255,7 +255,23 @@
+         # Add in the environment settings from app_yaml "env_variables:"
+         runtime_config = self._runtime_config_getter()
+         for kv in runtime_config.environ:
+-          environ[kv.key] = kv.value
++            key = kv.key
++            if isinstance(key, (bytes, bytearray)):
++              key = key.decode('utf-8')
++            elif isinstance(key, memoryview):
++              key = key.tobytes().decode('utf-8')
++            else:
++              key = str(key)
++
++            value = kv.value
++            if isinstance(value, (bytes, bytearray)):
++              value = value.decode('utf-8')
++            elif isinstance(value, memoryview):
++              value = value.tobytes().decode('utf-8')
++            else:
++              value = str(value)
++
++            environ[key] = value
+         proxy = http_runtime.HttpRuntimeProxy(

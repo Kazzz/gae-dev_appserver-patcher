@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "component": {
+    "id": "app-engine-python",
+    "version_string": "1.9.118",
+    "build_number": 20250822133333
+  },
+  "patches": [
+    {
+      "id": "go-env-strings",
+      "description": "Go実行プロセスへ渡す環境変数のキーと値を文字列へ変換します。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/go/instance_factory.py",
+      "patch_file": "005-go-env-strings.patch",
+      "original_sha256": "7871f765d9e3bcb7fb64f43705fd7e610f38cad153594e42251679e4a29f9633",
+      "patched_sha256": "3e41c2e818ab7c9b9b40ea8edc42ce8d127e142ee83c6ed55b94746a1ab50dd8"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py
+@@ -573,5 +573,8 @@
+   def _get_kinds(namespace):
+     """Return a sorted list of kind names present in the given namespace."""
+     assert namespace is not None
+-    q = metadata.Kind.all(namespace=namespace)
+-    return sorted([x.kind_name for x in q.run()])
++    q = datastore.Query(metadata.Kind.kind(),
++                        _namespace=namespace,
++                        keys_only=True,
++                        compile=False)
++    return sorted([entity.name() for entity in q.Get(10000, 0)])

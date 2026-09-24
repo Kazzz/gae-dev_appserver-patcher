@@ -1,0 +1,5 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/go/gaego.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/go/gaego.py
+@@ -93,1 +93,1 @@
+-      args.extend(['-gcflags', '"all=-N -l"'])
++      args.extend(['-gcflags', 'all=-N -l'])

@@ -1,0 +1,11 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py
+@@ -167,2 +167,6 @@
+-    request_pb = grpc_service_pb2.Request(  # pytype: disable=module-attr
+-        service_name=service, method=call, request=request.Encode())
++    if hasattr(request, 'Encode'):
++      encoded_request = request.Encode()
++    else:
++      encoded_request = request.SerializeToString()
++    request_pb = grpc_service_pb2.Request(  # pytype: disable=module-attr
++        service_name=service, method=call, request=encoded_request)

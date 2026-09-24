@@ -1,0 +1,39 @@
+--- a/platform/google_appengine/lib/cloudstorage/cloudstorage/cloudstorage_stub.py
++++ b/platform/google_appengine/lib/cloudstorage/cloudstorage/cloudstorage_stub.py
+@@ -390,18 +390,23 @@
+-    content = b''
+-    previous_end = 0
+-    error_msg = ''
+-    for partial in (_AE_GCSPartialFile_.all(namespace='').ancestor(gcs_file).
+-                    order('__key__')):
+-      start = int(partial.key().name())
+-      if not error_msg:
+-        if start < previous_end:
+-          error_msg = 'File is corrupted due to missing chunks.'
+-        elif start > previous_end:
+-          error_msg = 'File is corrupted due to overlapping chunks'
+-        previous_end = partial.end
+-        content += self.blob_storage.OpenBlob(partial.partial_content).read()
+-        self.blob_storage.DeleteBlob(partial.partial_content)
+-      partial.delete()
++    content = b''
++    previous_end = 0
++    error_msg = ''
++    current_start = 0
++    while current_start < gcs_file.next_offset:
++      partial = _AE_GCSPartialFile_.get_by_key_name(
++          '%020d' % current_start, parent=gcs_file)
++      if not partial:
++        error_msg = 'File is corrupted due to missing chunks.'
++        break
++      start = int(partial.key().name())
++      if not error_msg:
++        if start < previous_end:
++          error_msg = 'File is corrupted due to missing chunks.'
++        elif start > previous_end:
++          error_msg = 'File is corrupted due to overlapping chunks'
++        previous_end = partial.end
++        content += self.blob_storage.OpenBlob(partial.partial_content).read()
++        self.blob_storage.DeleteBlob(partial.partial_content)
++      current_start = partial.end
++      partial.delete()

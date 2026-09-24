@@ -1,0 +1,23 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py
+@@ -126,13 +126,13 @@
+-  query = datastore.Query(kind, _namespace=namespace)
++  query = datastore.Query(kind, _namespace=namespace, compile=False)
+-
++
+   if order:
+     if order.startswith('-'):
+       direction = datastore.Query.DESCENDING
+       order = order[1:]
+     else:
+       direction = datastore.Query.ASCENDING
+     query.Order((order, direction))
+-
++
+-  total = query.Count()
+-  entities = query.Get(count, start)
+-  return entities, total
++  results = query.Get(count + 1, start)
++  entities = results[:count]
++  visible_total = start + len(entities) + (len(results) > count)
++  return entities, visible_total

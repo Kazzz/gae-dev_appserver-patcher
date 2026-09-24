@@ -1,0 +1,16 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/grpc_service_pb2.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/grpc_service_pb2.py
+@@ -23,7 +23,7 @@
+-from google.net.proto2.python.public import descriptor as _descriptor
+-from google.net.proto2.python.public import descriptor_pool as _descriptor_pool
+-from google.net.proto2.python.public import runtime_version as _runtime_version
+-from google.net.proto2.python.public import symbol_database as _symbol_database
+-from google.net.proto2.python.internal import builder as _builder
++from google.protobuf import descriptor as _descriptor
++from google.protobuf import descriptor_pool as _descriptor_pool
++from google.protobuf import runtime_version as _runtime_version
++from google.protobuf import symbol_database as _symbol_database
++from google.protobuf.internal import builder as _builder
+ _runtime_version.ValidateProtobufRuntimeVersion(
+-    _runtime_version.Domain.GOOGLE_INTERNAL,
++    _runtime_version.Domain.PUBLIC,

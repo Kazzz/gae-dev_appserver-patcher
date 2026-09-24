@@ -1,0 +1,82 @@
+--- a/platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py
++++ b/platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py
+@@ -194,3 +194,77 @@
+-    response.ParseFromString(response_pb.response)
+-
++    self._ParseResponseWithCompatibility(call, response, response_pb.response)
++
++  @staticmethod
++  def _ParseResponseWithCompatibility(call, response, payload):
++    """Decode v3 query results, including v4/v1 emulator responses."""
++    if call not in ('RunQuery', 'Next'):
++      response.ParseFromString(payload)
++      return
++
++    from google.appengine.datastore import datastore_pb
++    if not isinstance(response, datastore_pb.QueryResult):
++      response.ParseFromString(payload)
++      return
++
++    parse_error = None
++    try:
++      response.ParseFromString(payload)
++    except Exception as exc:
++      parse_error = exc
++    else:
++      # A v4 batch can be accepted as a v3 Cursor without raising an error.
++      # Reinterpret cursor-only results only when the v4 batch explicitly
++      # specifies more_results, which a normal v3 Cursor does not contain.
++      if (len(response.ListFields()) != 1 or
++          not response.HasField('cursor')):
++        return
++      from google.appengine.datastore import datastore_v4_pb2
++      try:
++        if call == 'RunQuery':
++          v4_response = datastore_v4_pb2.RunQueryResponse()
++        else:
++          v4_response = datastore_v4_pb2.ContinueQueryResponse()
++        v4_response.ParseFromString(payload)
++        if not v4_response.HasField('batch') or not v4_response.batch.HasField(
++            'more_results'):
++          return
++        from google.appengine.datastore import datastore_stub_util
++        converter = datastore_stub_util.get_service_converter()
++        if call == 'RunQuery':
++          converted = converter.v4_run_query_resp_to_v3_query_result(v4_response)
++        else:
++          converted = converter.v4_to_v3_query_result(v4_response.batch)
++      except Exception:
++        return
++      response.CopyFrom(converted)
++      return
++
++    from google.appengine.datastore import datastore_stub_util
++    from google.appengine.datastore import datastore_v4_pb2
++    converter = datastore_stub_util.get_service_converter()
++    try:
++      if call == 'RunQuery':
++        v4_response = datastore_v4_pb2.RunQueryResponse()
++        v4_response.ParseFromString(payload)
++        converted = converter.v4_run_query_resp_to_v3_query_result(v4_response)
++      else:
++        v4_response = datastore_v4_pb2.ContinueQueryResponse()
++        v4_response.ParseFromString(payload)
++        converted = converter.v4_to_v3_query_result(v4_response.batch)
++      response.CopyFrom(converted)
++      return
++    except Exception:
++      if call != 'RunQuery':
++        raise parse_error
++
++    from google.appengine.datastore import datastore_pbs
++    if not datastore_pbs._CLOUD_DATASTORE_ENABLED:
++      raise parse_error
++    try:
++      v1_response = datastore_pbs.googledatastore.RunQueryResponse()
++      v1_response.ParseFromString(payload)
++      converted = converter.v1_run_query_resp_to_v3_query_result(v1_response)
++      response.CopyFrom(converted)
++    except Exception:
++      raise parse_error
++
+   def MakeSyncCallForRemoteApi(self, request):

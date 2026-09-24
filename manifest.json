@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "component": {
+    "id": "app-engine-python",
+    "version_string": "1.9.118",
+    "build_number": 20250822133333
+  },
+  "patches": [
+    {
+      "id": "go-gcflags",
+      "description": "Goデバッグビルドの-gcflagsへ余分な引用符を渡さないようにします。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/go/gaego.py",
+      "patch_file": "001-go-gcflags.patch",
+      "original_sha256": "5e472f5337b09573a10ce6bfe67957f73947f33b3b13f51888aa615324fadf9f",
+      "patched_sha256": "9958bf47e8bccf4b5ea7ba92a1fe091a9a4340a191ee121b02a45f76dba9e60e"
+    },
+    {
+      "id": "public-protobuf",
+      "description": "Google内部用protobuf importを公開版google.protobufへ置き換えます。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/grpc_service_pb2.py",
+      "patch_file": "002-public-protobuf.patch",
+      "original_sha256": "40938b86010110cdab2ac9ffcad92b068e84679efb468b1776d202314b0a52d5",
+      "patched_sha256": "55b8ca71745dd9ecd5ef9304cc2b952e6b9012ec3e622513e9171d1d485e5cb6"
+    },
+    {
+      "id": "taskqueue-protobuf-serialization",
+      "description": "Transactional Task QueueのprotobufをPython 2形式とPython 3形式の両方でシリアライズできるようにします。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py",
+      "patch_file": "003-taskqueue-protobuf-serialization.patch",
+      "original_sha256": "b2d3090d3f4132be4aa5d0d992b547c74ec93e0433645cd21030881e814aad49",
+      "patched_sha256": "66c7bddb082626710153bbf87a466b42a6c51500e92e7251a2554c74ef903ee4"
+    },
+    {
+      "id": "datastore-query-response",
+      "description": "Datastore Emulatorのv4/v1クエリ応答をv3へ変換し、カーソル終端の曖昧な応答も検出します。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/datastore_grpc_stub.py",
+      "patch_file": "004-datastore-query-response.patch",
+      "original_sha256": "66c7bddb082626710153bbf87a466b42a6c51500e92e7251a2554c74ef903ee4",
+      "patched_sha256": "128dbef80e5fd2db2f85c05609e87e1bdf44068acf37106e629bddb25c531013"
+    },
+    {
+      "id": "datastore-viewer-kinds",
+      "description": "Datastore Viewerの種類一覧をCompiledQueryなしで取得します。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py",
+      "patch_file": "006-datastore-viewer-kinds.patch",
+      "original_sha256": "44a9141204f7c2bb5f7b7d6702599d4371df7c062eeef914d6883d7612c82985",
+      "patched_sha256": "1509bc1b6dc3379f7b921ce2ff73f39de3706532a3ddd066b54b7ddf834af1fd"
+    },
+    {
+      "id": "datastore-viewer-entities",
+      "description": "Datastore Viewerの一覧をCompiledQueryとCountなしで取得します。",
+      "file": "platform/google_appengine/google/appengine/tools/devappserver2/admin/datastore_viewer.py",
+      "patch_file": "007-datastore-viewer-entities.patch",
+      "original_sha256": "1509bc1b6dc3379f7b921ce2ff73f39de3706532a3ddd066b54b7ddf834af1fd",
+      "patched_sha256": "84160a0b42acfb7ffffa45e15145f3b20ee60b178ab7adce597fdeee64d846f3"
+    },
+    {
+      "id": "cloudstorage-direct-chunks",
+      "description": "GCSアップロード確定時に分割データをキーで取得し、空のBlobを作らないようにします。",
+      "file": "platform/google_appengine/lib/cloudstorage/cloudstorage/cloudstorage_stub.py",
+      "patch_file": "008-cloudstorage-direct-chunks.patch",
+      "original_sha256": "ca0812ef8165c459bfe983692308dbeed687d50d1131ad1a4db7eaf33878d39d",
+      "patched_sha256": "af1cd385caf7baa58d6f3dfe88887edb37a3ab71cdabc9139240efdb0bab9e70"
+    }
+  ]
+}
